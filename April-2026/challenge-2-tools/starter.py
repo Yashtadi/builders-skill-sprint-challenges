@@ -35,11 +35,28 @@ def age_calculator(birth_date: str) -> str:
     )
     return f"Someone born on {birth_date} is {age} years old."
 
+
+@tool
+def inr_to_usd(inr_amount: float) -> str:
+    """Convert INR to USD.
+    Args:
+        inr_amount: Amount in Indian Rupees.
+    """
+    exchange_rate = 0.012  # Example exchange rate
+    usd_amount = inr_amount * exchange_rate
+    return f"{inr_amount} INR is approximately {usd_amount:.2f} USD."
+
+
 agent = Agent(
     model=MODEL,
-    tools=[calculator, weather, age_calculator],
-    system_prompt="You are a helpful assistant with tools. Use them to answer accurately."
-)
+    tools=[calculator, weather, age_calculator, inr_to_usd],
+    system_prompt="You are a helpful assistant with tools. Use them to answer accurately. When asked for a multi-step task, use the available tools in order."
+    )
+
+
+print("conversion test:")
+response = agent("First use the calculator to compute 42 * 8, then use the inr_to_usd tool on that result.")
+print(response)
 
 print("🧮 Math test:")
 response = agent("What is 42 * 17?")
